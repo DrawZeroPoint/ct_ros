@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 
 # the control toolbox is required in the same catkin-workspace
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../control-toolbox/ct/cmake/compilerSettings.cmake)
@@ -14,6 +14,19 @@ find_package(catkin REQUIRED
     visualization_msgs 
     dynamic_reconfigure
     )
+
+## include blasfeo and hpipm, assumed to be installed in "/opt"
+list(APPEND CMAKE_PREFIX_PATH "/opt")
+find_package(blasfeo QUIET)
+find_package(hpipm QUIET)
+if(blasfeo_FOUND AND hpipm_FOUND)
+    message(STATUS "Found HPIPM and BLASFEO")
+    set(HPIPM ON)
+    list(APPEND HPIPM_LIBS hpipm blasfeo)
+    list(APPEND ct_optcon_COMPILE_DEFINITIONS HPIPM)
+else()
+    message(WARNING "Could not find HPIPM or BLASFEO")
+endif()
 
 find_package(ct_models REQUIRED)
 

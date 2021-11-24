@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0.2)
 project(ct_ros)
 find_package(catkin REQUIRED)
 catkin_metapackage()
