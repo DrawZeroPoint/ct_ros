@@ -3,7 +3,7 @@
 
   <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen" args="-d $(find ct_ros_nodes)/rviz/frankaViz.rviz"/>
 
-  <param name="franka_description" textfile="$(find curiosity_description)/urdf/panda.urdf" />
+  <param name="franka_description" textfile="$(find curiosity_description)/urdf/franka_tabletop.urdf" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="franka_state_publisher">
     <param name="~tf_prefix" value="franka" type="str"/>
