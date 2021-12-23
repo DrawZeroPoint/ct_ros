@@ -36,13 +36,14 @@ int main(int argc, char* argv[])
     ros::NodeHandle nh("~");
 
     ROS_INFO("Set up visualizers");
-    std::string frameId = "/world";
-    ct::ros::RBDStatePublisher statePublisher(ct::models::Franka::urdfJointNames(), "/franka/table", frameId);
+    std::string frameId = "table";
+    ct::ros::RBDStatePublisher statePublisher(ct::models::Franka::urdfJointNames(), "panda_link0", frameId);
     statePublisher.advertise(nh, "/joint_states", 10);
 
-    std::shared_ptr<ct::ros::PoseVisualizer> targetPoseVisualizer(new ct::ros::PoseVisualizer(frameId, "target_pose"));
+    std::shared_ptr<ct::ros::PoseVisualizer> targetPoseVisualizer(
+        new ct::ros::PoseVisualizer("franka/table", "target_pose"));
     std::shared_ptr<ct::ros::PoseVisualizer> currentPoseVisualizer(
-        new ct::ros::PoseVisualizer(frameId, "current_pose"));
+        new ct::ros::PoseVisualizer("franka/table", "current_pose"));
 
     ct::ros::VisNode<geometry_msgs::PoseStamped> visNode_poseDes(nh, std::string("ee_ref_pose_visualizer"));
     ct::ros::VisNode<geometry_msgs::PoseStamped> visNode_poseCurr(nh, std::string("ee_current_pose_visualizer"));
