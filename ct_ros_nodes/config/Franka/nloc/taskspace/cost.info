@@ -124,6 +124,54 @@ term_quad_final
 }
 
 
+termTaskSpace_intermediate
+{
+	name "intermediate cost taskspace"
+	kind "quadratic"
+	type 0              ; 0 = intermediate, 1 = final
+
+	weights
+	{
+		eeId	0
+
+		; desired xyz euler angles
+		eulerXyz_des
+		{
+			(0,0)  0.1
+			(1,0)  0.1
+			(2,0)  0.0
+		}
+
+		; state weighting
+		Q_pos
+		{
+			scaling 500.0
+
+			; position weighting
+			(0,0)  1
+			(1,1)  1
+			(2,2)  1
+		}
+		Q_rot
+		{
+			scaling 150.0
+
+			; position weighting
+			(0,0)  1
+			(1,1)  1
+			(2,2)  1
+		}
+
+		x_des
+		{
+			; des position
+			(0,0)   0.5
+			(1,0)   0.25
+			(2,0)   1.5
+		}
+	}
+}
+
 termTaskSpace_final
 {
 	name "final cost taskspace"

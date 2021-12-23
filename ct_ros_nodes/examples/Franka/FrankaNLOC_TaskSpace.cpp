@@ -41,7 +41,8 @@ int main(int argc, char* argv[])
     statePublisher.advertise(nh, "/joint_states", 10);
 
     std::shared_ptr<ct::ros::PoseVisualizer> targetPoseVisualizer(new ct::ros::PoseVisualizer(frameId, "target_pose"));
-    std::shared_ptr<ct::ros::PoseVisualizer> currentPoseVisualizer(new ct::ros::PoseVisualizer(frameId, "current_pose"));
+    std::shared_ptr<ct::ros::PoseVisualizer> currentPoseVisualizer(
+        new ct::ros::PoseVisualizer(frameId, "current_pose"));
 
     ct::ros::VisNode<geometry_msgs::PoseStamped> visNode_poseDes(nh, std::string("ee_ref_pose_visualizer"));
     ct::ros::VisNode<geometry_msgs::PoseStamped> visNode_poseCurr(nh, std::string("ee_current_pose_visualizer"));
@@ -88,6 +89,10 @@ int main(int argc, char* argv[])
 
     // task space cost term
     using TermTaskspacePose = ct::rbd::TermTaskspaceGeometricJacobian<FrankaKinematics_t, state_dim, control_dim>;
+    std::shared_ptr<TermTaskspacePose> termTaskSpace_intermediate(
+        new TermTaskspacePose(costFunctionFile, "termTaskSpace_intermediate", true));
+    costFun->addIntermediateTerm(termTaskSpace_intermediate, true);
+
     std::shared_ptr<TermTaskspacePose> termTaskSpace_final(
         new TermTaskspacePose(costFunctionFile, "termTaskSpace_final", true));
     size_t task_space_term_id = costFun->addFinalTerm(termTaskSpace_final, true);
