@@ -4,11 +4,11 @@ roslaunch ct_ros_nodes hyq_nloc_example.launch task:=turn
 -->
 
 <launch>
-	<arg name="task" default="stand" />
+	<arg name="task" default="trot" />
 
 	<node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen" args="-d $(find ct_ros_nodes)/rviz/hyqViz.rviz"/>
-	<param name="hyq_description" command="$(find xacro)/xacro.py '$(find ct_models)/urdf/HyQ/hyqb.urdf.xacro'"/>
-	
+	<param name="hyq_description" command="$(find xacro)/xacro '$(find ct_models)/urdf/HyQ/hyqb.urdf.xacro'"/>
+
 	<node pkg="robot_state_publisher" type="robot_state_publisher" name="hyq_state_publisher" >
       <remap from="robot_description" to="hyq_description" />
     </node>

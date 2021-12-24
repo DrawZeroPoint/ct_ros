@@ -6,73 +6,73 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../../control-toolbox/ct/cmake/compilerSetti
 project(ct_ros_nodes)
 
 find_package(catkin REQUIRED
-    ct_ros_msgs
-    tf2_ros
-    std_msgs
-    sensor_msgs
-    geometry_msgs
-    visualization_msgs
-    dynamic_reconfigure
-    )
+  ct_ros_msgs
+  tf2_ros
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  visualization_msgs
+  dynamic_reconfigure
+  )
 
 ## include blasfeo and hpipm, assumed to be installed in "/opt"
 list(APPEND CMAKE_PREFIX_PATH "/opt")
 find_package(blasfeo QUIET)
 find_package(hpipm QUIET)
-if(blasfeo_FOUND AND hpipm_FOUND)
+if (blasfeo_FOUND AND hpipm_FOUND)
   message(STATUS "Found HPIPM and BLASFEO")
   set(HPIPM ON)
   list(APPEND HPIPM_LIBS hpipm blasfeo)
   list(APPEND ct_optcon_COMPILE_DEFINITIONS HPIPM)
-else()
+else ()
   message(WARNING "Could not find HPIPM or BLASFEO")
-endif()
+endif ()
 
 find_package(ct_models REQUIRED)
 
 ## internal options - not required for successful building an run
 find_package(matlab_cpp_interface QUIET)
 find_package(cereal QUIET)
-if(cereal_FOUND)
+if (cereal_FOUND)
   add_definitions("-DCEREAL_ENABLED")
   include_directories(${cereal_INCLUDE_DIRS})
-endif()
+endif ()
 
-option(BUILD_HYQ_FULL "Compile all examples for HyQ (takes long, should use clang)" false)
+option(BUILD_HYQ_FULL "Compile all examples for HyQ (takes long, should use clang)" true)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfatal-errors -std=c++14")
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 generate_dynamic_reconfigure_options(
-    cfg/Simulation.cfg
+  cfg/Simulation.cfg
 )
 
 catkin_package(
-    INCLUDE_DIRS
-    include
-    examples
-    LIBRARIES
-    ct_ros_visualization
-    CATKIN_DEPENDS
-    tf2_ros
-    DEPENDS
-    ct_models
+  INCLUDE_DIRS
+  include
+  examples
+  LIBRARIES
+  ct_ros_visualization
+  CATKIN_DEPENDS
+  tf2_ros
+  DEPENDS
+  ct_models
 )
 
 include_directories(
-    include
-    ${catkin_INCLUDE_DIRS}
+  include
+  ${catkin_INCLUDE_DIRS}
 )
 
 add_library(ct_ros_visualization
-    src/visualizer/PointsVisualizer.cpp
-    src/visualizer/SphereVisualizer.cpp
-    src/visualizer/PointsBinVisualizer.cpp
-    src/visualizer/LineStripVisualizer.cpp
-    src/visualizer/ArrowVisualizer.cpp
-    src/visualizer/PoseVisualizer.cpp
-    src/visualizer/colorMapping.cpp
-    )
+  src/visualizer/PointsVisualizer.cpp
+  src/visualizer/SphereVisualizer.cpp
+  src/visualizer/PointsBinVisualizer.cpp
+  src/visualizer/LineStripVisualizer.cpp
+  src/visualizer/ArrowVisualizer.cpp
+  src/visualizer/PoseVisualizer.cpp
+  src/visualizer/colorMapping.cpp
+  )
 target_link_libraries(ct_ros_visualization ct_models)
 
 set(CT_ROS_EXAMPLE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
@@ -87,11 +87,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/examples/exampleDir.h.in ${CMAKE_CURR
 add_executable(QuadrotorNLOC examples/Quadrotor/QuadrotorNLOC.cpp)
 target_link_libraries(QuadrotorNLOC ${catkin_LIBRARIES} ct_models)
 
-if(BUILD_HYQ_FULL)
-  add_executable(HyQNLOCContactModel examples/HyQ/HyQNLOCContactModel.cpp)
-  target_link_libraries(HyQNLOCContactModel ${catkin_LIBRARIES} ct_models)
-  add_dependencies(HyQNLOCContactModel ${PROJECT_NAME}_gencfg)
-endif(BUILD_HYQ_FULL)
+#if(BUILD_HYQ_FULL)
+add_executable(HyQNLOCContactModel examples/HyQ/HyQNLOCContactModel.cpp)
+target_link_libraries(HyQNLOCContactModel ${catkin_LIBRARIES} ct_models)
+add_dependencies(HyQNLOCContactModel ${PROJECT_NAME}_gencfg)
+#endif(BUILD_HYQ_FULL)
 
 add_executable(HyANLOC examples/HyA/HyANLOC.cpp)
 target_link_libraries(HyANLOC ${catkin_LIBRARIES} ct_models)
@@ -105,10 +105,10 @@ target_link_libraries(FrankaNLOC_TaskSpace ${catkin_LIBRARIES} ct_ros_visualizat
 add_executable(HyANLOC_TaskSpaceAcc examples/HyA/HyANLOC_TaskSpaceAcc.cpp)
 target_link_libraries(HyANLOC_TaskSpaceAcc ${catkin_LIBRARIES} ct_ros_visualization ct_models)
 
-if(CPPADCG)
+if (CPPADCG)
   add_executable(HyANLOC_ObstacleAcc examples/HyA/HyANLOC_ObstacleAcc.cpp)
   target_link_libraries(HyANLOC_ObstacleAcc ${catkin_LIBRARIES} ct_ros_visualization ct_models)
-endif()
+endif ()
 
 add_executable(HyA_NLP_IK examples/HyA/HyA_NLP_IK.cpp)
 target_link_libraries(HyA_NLP_IK ${catkin_LIBRARIES} ct_ros_visualization ct_models)
@@ -122,7 +122,7 @@ add_dependencies(HyADMS ${PROJECT_NAME}_gencfg)
 
 
 find_package(Doxygen)
-if(DOXYGEN_FOUND)
+if (DOXYGEN_FOUND)
 
   set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/doc/ct_ros_nodes.doxyfile)
   set(doxyfile ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
@@ -130,9 +130,9 @@ if(DOXYGEN_FOUND)
   configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
   add_custom_target(doc
-      COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-      COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc
-      COMMAND ${CMAKE_COMMAND} -E echo_append "API Documentation built in ${CMAKE_CURRENT_SOURCE_DIR}/doc"
-      VERBATIM)
-endif()
+    COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
+    COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc
+    COMMAND ${CMAKE_COMMAND} -E echo_append "API Documentation built in ${CMAKE_CURRENT_SOURCE_DIR}/doc"
+    VERBATIM)
+endif ()
