@@ -93,6 +93,15 @@ target_link_libraries(HyQNLOCContactModel ${catkin_LIBRARIES} ct_models)
 add_dependencies(HyQNLOCContactModel ${PROJECT_NAME}_gencfg)
 #endif(BUILD_HYQ_FULL)
 
+
+add_executable(WalkerNLOCContactModel examples/Walker/WalkerNLOCContactModel.cpp)
+target_link_libraries(WalkerNLOCContactModel ${catkin_LIBRARIES} ct_models)
+add_dependencies(WalkerNLOCContactModel ${PROJECT_NAME}_gencfg)
+
+add_executable(TalosNLOCContactModel examples/Talos/TalosNLOCContactModel.cpp)
+target_link_libraries(TalosNLOCContactModel ${catkin_LIBRARIES} ct_models)
+add_dependencies(TalosNLOCContactModel ${PROJECT_NAME}_gencfg)
+
 add_executable(HyANLOC examples/HyA/HyANLOC.cpp)
 target_link_libraries(HyANLOC ${catkin_LIBRARIES} ct_models)
 
